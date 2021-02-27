@@ -15,33 +15,37 @@ if (dir) {
 }
 
 function copyFile (dirPath) {
-  if (!isExsist(dirPath)) {
-    // 判断需要copy的目录是否存在
-    console.log(dirPath + '不存在!')
-    return
-  }
-
   const res = fs.readdirSync(dirPath)
-  res.forEach(item => {
-    // 获取当前相对路径
-    const targetPath = path.join(dirPath, item)
-    // 定义输出目标路径，dir表示终端传入的值（0为不生成对应文件夹）
-    const wsPath = path.join('./out', dir ? targetPath : item)
-    // 获取当前对象信息
-    const target = fs.statSync(targetPath)
-    if (target.isDirectory()) {
-      if (!isExsist(wsPath) && item !== 'out') {
-        dir && fs.mkdirSync(wsPath) // 创建对应文件夹
-        copyFile(targetPath)
+  for (let item of res) {
+    (async () => {
+      // 获取当前相对路径
+      const targetPath = path.join(dirPath, item)
+      // 定义输出目标路径，dir表示终端传入的值（0为不生成对应文件夹）
+      const wsPath = path.join('./out', dir ? targetPath : item)
+      // 获取当前对象信息
+      const target = fs.statSync(targetPath)
+      if (target.isDirectory()) {
+        if (!isExsist(wsPath) && item !== 'out') {
+          dir && fs.mkdirSync(wsPath) // 创建对应文件夹
+          copyFile(targetPath)
+        }
+      } else {
+        if (item !== 'index.js') {
+          // 创建管道写入数据
+          await write(wsPath, targetPath)
+        }
       }
-    } else {
-      if (item !== 'index.js') {
-        // 创建管道写入数据
-        const ws = fs.createWriteStream(wsPath)
-        fs.createReadStream(targetPath).pipe(ws) 
-      }
-    }
-  })  
+    })()
+  }
+}
+
+// 改为同步的方式读写，解决报错：Error: EMFILE, too many open files
+async function write (wsPath, targetPath) {
+  const ws = fs.createWriteStream(wsPath)
+  fs.createReadStream(targetPath).pipe(ws)
+  ws.on('close', () => {
+    console.log(targetPath + '下载完成...')
+  })
 }
 
 // 新建多层文件夹
