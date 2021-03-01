@@ -4,7 +4,7 @@ const path = require('path')
 let [dir = 0, dirPath = "./"] = process.argv.slice(2)
 dir = Boolean(+dir)
 
-const baseDir = './out5'
+const baseDir = './out'
 const targetDirPath = path.join(baseDir, dirPath)
 
 if (dir) {
@@ -28,20 +28,20 @@ async function copyFile (dirPath) {
     try {
       target = fs.statSync(targetPath)
     } catch (err) {
-      console.warn(err)
+      console.log(err)
     }
     if (target && target.isDirectory()) {
-      if (!isExsist(wsPath) && item !== 'out') {
+      if (!isExsist(wsPath) && item !== baseDir) {
         dir && fs.mkdirSync(wsPath) // 创建对应文件夹
-        copyFile(targetPath)
+        await copyFile(targetPath)
       }
     } else {
       if (item !== 'index.js') {
         // 创建管道写入数据
         try {
-          await write(wsPath, targetPath)
+          await write(path.join(wsPath), targetPath)
         } catch (err) {
-          console.warn(err)
+          console.log(err)
         }
       }
     }
@@ -53,9 +53,8 @@ function write (wsPath, targetPath) {
   return new Promise(resolve => {
     const ws = fs.createWriteStream(wsPath)
     fs.createReadStream(targetPath).pipe(ws)
-    ws.on('close', () => {
+    ws.on('finish', () => {
       console.log(targetPath + '拷贝完成...')
-      ws.end()
       resolve()
     })
   })
