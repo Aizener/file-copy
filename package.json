@@ -1,0 +1,35 @@
+{
+  "name": "file-copy",
+  "version": "1.0.0",
+  "description": "> 一个基于Node.js拷贝文件的工具",
+  "main": "index.js",
+  "dependencies": {
+    "archiver": "^5.2.0",
+    "babel-preset-es2015": "^6.24.1",
+    "babel-preset-stage-0": "^6.24.1",
+    "cos-nodejs-sdk-v5": "^2.9.10",
+    "webpack-cli": "^4.5.0",
+    "webpack": "^4.46.0"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.13.8",
+    "@babel/preset-env": "^7.13.9",
+    "babel-loader": "^7.1.5",
+    "copy-webpack-plugin": "^8.0.0",
+    "webpack-node-externals": "^2.5.2"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Aizener/file-copy.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Aizener/file-copy/issues"
+  },
+  "homepage": "https://github.com/Aizener/file-copy#readme"
+}
